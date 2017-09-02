@@ -1,9 +1,14 @@
 #include "U8glib.h"
 
-#define IR_REC_ONE_PIN = 0;
-#define IR_REC_TWO_PIN = 1;
+#define IR_REC_ONE_PIN 0;
+#define IR_REC_TWO_PIN 1;
+#define GATE_DISPLACEMENT 4;    //in inches
+#define IR_GATE_TRIP_VAL 95;
 
-U8GLIB_SSD1306_128X64 u8g(U8G_I2C_OPT_NONE);    
+U8GLIB_SSD1306_128X64 u8g(U8G_I2C_OPT_NONE);   
+
+double firstTripTime, secondTripTime;
+boolean hasFirstTripped = false;
 
 void setup () {
   setupDisplay();
@@ -42,6 +47,18 @@ void draw () {
 }
 
 void chrono () {
+    if (hasFirstTripped == false && map(analogRead(IR_REC_ONE_PIN), 0, 1024, 0, 100) > IR_GATE_TRIP_VAL)  {
+        firstTripTime = micros();
+        hasFirstTripped = true;
+    }
+    if (hasFirstTripped == true && (map(analogRead(IR_REC_TWO_PIN), 0, 1024, 0, 100) > IR_GATE_TRIP_VAL) ) {
+        secondTripTime = micros();
+        hasFirstTripped = false;
+        calculateChronoReadings();
+    }
+}
+
+double calculateChronoReadings () {
     
 }
 
