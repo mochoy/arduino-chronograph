@@ -11,6 +11,7 @@ void setup () {
 
 void loop () {
   loopDisplay();
+  chrono();
 }
 
 void setupDisplay () {
@@ -38,6 +39,10 @@ void loopDisplay () {
 void draw () {
   u8g.setFont(u8g_font_unifont);
   u8g.drawStr( 0, 22, "Hello Worlds!");
+}
+
+void chrono () {
+    
 }
 
 
