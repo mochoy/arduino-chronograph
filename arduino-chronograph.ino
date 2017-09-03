@@ -17,22 +17,23 @@ U8G2_SSD1306_128X64_NONAME_F_SW_I2C u8g2(U8G2_R0, /* clock=*/ SCL, /* data=*/ SD
 
 double firstTripTime, secondTripTime;
 boolean hasFirstTripped = false;
-String chronoValsToPrint = "";
+char chronoValsToPrint[4];
 
 void setup () {
   u8g2.begin();
 }
 
 void loop () {
-  chrono();
+  // chrono();
   display();
 }
 
 void display () {
   u8g2.firstPage();
     do {
+      sprintf(chronoValsToPrint,"%04d", analogRead(IR_REC_ONE_PIN));
       u8g2.setFont(u8g2_font_ncenB10_tr);
-      u8g2.drawStr(0,24,"Hello World!");
+      u8g2.drawUTF8(0, 24, chronoValsToPrint);
     } while ( u8g2.nextPage() );
   delay(1000);
 }
@@ -46,7 +47,7 @@ void chrono () {
   if (hasFirstTripped == true && (map(analogRead(IR_REC_TWO_PIN), 0, 1024, 0, 100) > IR_GATE_TRIP_VAL) ) {
     secondTripTime = micros();
     hasFirstTripped = false;
-    chronoValsToPrint = (String)calculateChronoReadings();
+    // chronoValsToPrint = (String)calculateChronoReadings();
   }
 }
 
