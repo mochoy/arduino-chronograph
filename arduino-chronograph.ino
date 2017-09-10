@@ -11,16 +11,16 @@
 
 #define IR_REC_ONE_PIN 0      //pins for IR Gate
 #define IR_REC_TWO_PIN 1      //pins for IR gate
-#define GATE_DISPLACEMENT 4   //distance between gate, in inches
-#define IR_GATE_TRIP_VAL 95   //value at which the IR gate is considered "blocked", or "tripped"
+#define GATE_DISPLACEMENT 2   //distance between gate, in inches
+#define IR_GATE_TRIP_VAL 90   //value at which the IR gate is considered "blocked", or "tripped"
 
 U8G2_SSD1306_128X64_NONAME_F_SW_I2C u8g2(U8G2_R0, SCL, SDA, U8X8_PIN_NONE);   //display object
 
-double firstTripTime, secondTripTime, chronoReading;    //keep track of timing between IR gate breakage
+double firstTripTime, secondTripTime, chronoReading = 0;    //keep track of timing between IR gate breakage
 boolean hasFirstTripped = false;    //flag to ensure proper timing
 char chronoValsToPrint[4];    //what's displayedo in the display
 
-void setup () {
+void setup () {    
   u8g2.begin();   //begin necessary functions for the dispaly
   display();    //display text onto the display
 
@@ -41,7 +41,7 @@ void display () {
 }
 
 //chrono timing and trip checking
-void chrono () {
+void chrono () {    
   if (hasFirstTripped == false && (map(analogRead(IR_REC_ONE_PIN), 0, 1024, 0, 100) > IR_GATE_TRIP_VAL) ) {   
     firstTripTime = micros();
     hasFirstTripped = true;
