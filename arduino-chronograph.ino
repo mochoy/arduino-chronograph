@@ -1,6 +1,7 @@
 //libraries for display
 #include <Arduino.h>   
 #include <U8g2lib.h>
+#include <SoftwareSerial.h>
 
 #ifdef U8X8_HAVE_HW_SPI
 #include <SPI.h>
@@ -16,28 +17,40 @@
 
 U8G2_SSD1306_128X64_NONAME_F_SW_I2C u8g2(U8G2_R0, SCL, SDA, U8X8_PIN_NONE);   //display object
 
-double firstTripTime, secondTripTime, chronoReading = 0;    //keep track of timing between IR gate breakage
+double firstTripTime, secondTripTime, chronoReading = 0, i = 0;    //keep track of timing between IR gate breakage
 boolean hasFirstTripped = false;    //flag to ensure proper timing
 char chronoValsToPrint[4];    //what's displayedo in the display
 
-void setup () {    
+void setup () { 
+    Serial.begin(9600);
+    Serial.println("hello world!");
+       
   u8g2.begin();   //begin necessary functions for the dispaly
-  display();    //display text onto the display
 
 }
 
 void loop () {
-  chrono();   //check and do chrono
+   i++;
+   
+//  chrono();   //check and do chrono
+//  display();
 }
 
 //display text to screen
 void display () {
-  u8g2.firstPage();   //keep track of pages
-    do {
-      sprintf(chronoValsToPrint, "%04d", chronoReading);    //double to char*   
-      u8g2.setFont(u8g2_font_ncenB10_tr);   //select font
-      u8g2.drawUTF8(0, 24, chronoValsToPrint);    //draw text at certain coordiantes
-    } while ( u8g2.nextPage() );    //keep track of pages
+    Serial.println("in display!");
+
+    sprintf(chronoValsToPrint, "%04d", i);    //double to char*   
+    u8g2.setFont(u8g2_font_ncenB10_tr);   //select font
+    
+    u8g2.clearBuffer(); 
+    u8g2.drawStr(0,10,chronoValsToPrint);    // write something to the internal memory
+    u8g2.sendBuffer(); 
+    delay(1000);
+//    u8g2.firstPage();   //keep track of pages
+//    do {
+//      u8g2.drawUTF8(0, 24, chronoValsToPrint);    //draw text at certain coordiantes
+//    } while ( u8g2.nextPage() );    //keep track of pages
 }
 
 //chrono timing and trip checking
