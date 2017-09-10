@@ -1,7 +1,6 @@
 //libraries for display
 //#include <Arduino.h>   
 //#include <U8g2lib.h>
-//#include <SoftwareSerial.h>
 
 //#ifdef U8X8_HAVE_HW_SPI
 //#include <SPI.h>
@@ -17,7 +16,7 @@
 
 #define IR_REC_ONE_PIN 0      //pins for IR Gate
 #define IR_REC_TWO_PIN 1      //pins for IR gate
-#define GATE_DISPLACEMENT 2   //distance between gate, in inches
+#define GATE_DISPLACEMENT 0.1666f   //distance between gate, in feet
 #define IR_GATE_TRIP_VAL 90   //value at which the IR gate is considered "blocked", or "tripped"
 
 //U8G2_SSD1306_128X64_NONAME_F_SW_I2C u8g2(U8G2_R0, SCL, SDA, U8X8_PIN_NONE);   //display object
@@ -42,7 +41,7 @@ void loop () {
 }
 
 //display text to screen
-void displayVals () {
+void displayVals () {    
     display.clearDisplay();
     display.setTextSize(1);
     display.setTextColor(WHITE);
@@ -79,12 +78,8 @@ void chrono () {
 
 //chrono calculations based on time
 double calculateChronoReadings () {
-  double timeElapsed = (secondTripTime - firstTripTime) * 1000000;
-  double displacement = GATE_DISPLACEMENT / 12;
-
-  chronoReading = displacement/timeElapsed;
+  chronoReading = (float)GATE_DISPLACEMENT/((secondTripTime - firstTripTime) / 1000000);
   displayVals();       //display vals
-
 }
 
 
